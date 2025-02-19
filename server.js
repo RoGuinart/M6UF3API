@@ -8,18 +8,39 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // Connecta't a MongoDB (modifica l'URI amb la teva pròpia cadena de connexió)
-mongoose.connect('mongodb+srv://agarci9:Castellet25@cluster0.gc1mk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb+srv://RoGuinart:RGuinartPassword@m06-rguinart.63gkt.mongodb.net', { dbName: 'Forum' }, {collection: 'Threads'})
   .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.log('Error connecting to MongoDB:', err));
+  .catch(err => console.log('Error connecting to MongoDB:', err)
+);
 
 // Definició del model de dades (un exemple simple d'un model de "Usuari")
-const userSchema = new mongoose.Schema({
-  name: String,
-  email: String
+
+const messageSchema = new mongoose.Schema({
+	reply_id: Number,
+	date_posted: String,
+	text: {type: String, required: true},
+	attachment: String
 });
 
-const User = mongoose.model('User', userSchema);
+const threadSchema = new mongoose.Schema({
+	thread_id: Number,
+	main_post: { type: messageSchema },
+	replies: [{ type: messageSchema }]
+});
 
+const Threads = mongoose.model('Threads', threadSchema, 'Threads');
+
+app.get('/', async(req, res) => {
+	try {
+	  const catalog = await Threads.find();
+	  res.status(200).json(catalog);
+	} catch (err) {
+	  res.status(500).json({ message: 'Error fetching catalog', error: err.message });
+	}
+});
+
+/*
+app.get
 
 app.post('/users', async (req, res) => {
   /// res.status(200).json(req.body);
@@ -90,7 +111,7 @@ app.delete('/users/:id', async (req, res) => {
     res.status(500).json({ message: 'Error deleting user', error: err.message });
   }
 });
-
+*/
 // Inicia el servidorxºxºz  
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
