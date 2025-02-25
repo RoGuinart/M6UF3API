@@ -54,7 +54,7 @@ app.get('/list/:dataini/:datafi', async(req, res) => {
 	}
 });
 
-app.post('/list', async (req, res) => {
+app.post('/add', async (req, res) => {
 	/// res.status(200).json(req.body);
 	// If there is no text, cancel the operation
 	if(!req.body.text)
