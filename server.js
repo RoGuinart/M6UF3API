@@ -102,13 +102,26 @@ app.delete('/thread/:id/:msg', async (req, res) => {
 
 	console.log(msg);
 	try {
-		const thr = await Thread.findByIdAndUpdate(id, {$pullAll: {replies: [{_id: msg}]}});
+		const thr = await Thread.findByIdAndUpdate(id, { $pullAll: { replies: [{reply_id: req.params.msg}] } });
 		if (!thr) {
-		return res.status(404).json({ message: 'Thread not found' });
-	}
+			return res.status(404).json({ message: 'Thread not found' });
+		}
 		res.status(200).json({ message: 'Message deleted successfully' });
 	} catch (err) {
 		res.status(500).json({ message: 'Error deleting message', error: err.message });
+	}
+});
+
+app.delete('/thread/:id', async(req, res) => {
+	const id = req.params.id;
+
+	console.log(id);
+	try {
+		await Thread.deleteOne({_id: req.params.id});
+
+		res.status(200).json({ message: 'Thread deleted successfully' });
+	} catch (err) {
+		res.status(500).json({ message: 'Error deleting thread', error: err.message });
 	}
 });
 
