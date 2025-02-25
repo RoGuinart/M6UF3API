@@ -40,6 +40,20 @@ app.get('/list', async(req, res) => {
 	}
 });
 
+app.get('/list/:dataini/:datafi', async(req, res) => {
+
+	const { dataini, datafi } = req.params;
+
+	try {
+		const catalog = await Thread.find(
+			{ "main_post.date_posted": {$lte: datafi, $gte: dataini} }
+		);
+		res.status(200).json(catalog);
+	} catch (err) {
+		res.status(500).json({ message: 'Error fetching thread list', error: err.message });
+	}
+});
+
 app.post('/list', async (req, res) => {
 	/// res.status(200).json(req.body);
 	// If there is no text, cancel the operation
