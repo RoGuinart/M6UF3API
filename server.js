@@ -98,7 +98,11 @@ app.put('/thread/:id', async (req, res) => {
 	const { id } = req.params;
 
 	try {
-		const newReply = new Message({text:req.body.text, attachment:req.body.attachment});
+		const newReply = new Message({
+			text: req.body.text,
+			date_posted: req.body.date_posted,
+			attachment: req.body.attachment
+		});
 
 		const thr = await Thread.findByIdAndUpdate(id, { $push: {replies: newReply} });
 	if (!thr) {
