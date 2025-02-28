@@ -120,7 +120,7 @@ app.delete('/thread/:id/:msg', async (req, res) => {
 
 	console.log(msg);
 	try {
-		const thr = await Thread.findByIdAndUpdate(id, { $pullAll: { replies: [{reply_id: req.params.msg}] } });
+		const thr = await Thread.findByIdAndUpdate(id, { $pull: { replies: {_id: msg} } });
 		if (!thr) {
 			return res.status(404).json({ message: 'Thread not found' });
 		}
